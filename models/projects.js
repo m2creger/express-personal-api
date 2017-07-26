@@ -9,6 +9,6 @@ var ProjectsSchema = new Schema ({
 
 });
 
-var Projects = mongoose.model('Projects', ProjectSchema);
+var Projects = mongoose.model('Projects', ProjectsSchema);
 
 module.exports = Projects;

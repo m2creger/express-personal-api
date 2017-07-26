@@ -1,6 +1,6 @@
 // This file allows us to seed our application with data
 // simply run: `node seed.js` from the root of this project folder.
-
+// % mongo ds012345.mlab.com:56789/heroku_1jg4z3h5 -u marshall.creger@gmail.com -p Chloesam2015!
 var db = require('./models');
 
 var myProfile = {
@@ -31,7 +31,7 @@ var myProjects = [
 ]
 //var myProfile = {description: "Sharp rocks. Middle of nowhere."}
 
-db.AboutMe.create(myProfile, function(err, campsite){
+db.AboutMe.create(myProfile, function(err, aboutme){
   if (err){
     return console.log("Error:", err);
   }
@@ -39,3 +39,4 @@ db.AboutMe.create(myProfile, function(err, campsite){
   console.log("Created new profile");
   process.exit(); // we're all done! Exit the program.
 })
+db.mynewcollection.insert({ "foo" : "bar" })
