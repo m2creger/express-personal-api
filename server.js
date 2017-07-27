@@ -1,6 +1,6 @@
 // require express and other modules
 var express = require('express'),
-    app = express();
+    app = express(), loadDatabase = require('./seed.js');
 
 // parse incoming urlencoded form data
 // and populate the req.body object
@@ -30,25 +30,110 @@ app.get('/', function homepage(req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+// Load Database
 
+loadDatabase();
 /*
  * JSON API Endpoints
  */
 
 app.get('/api', function api_index(req, res) {
   // TODO: Document all your api endpoints below
+
   res.json({
-    woops_i_has_forgot_to_document_all_my_endpoints: true, // CHANGE ME ;)
     message: "Welcome to my personal api! Here's what you need to know!",
-    documentation_url: "https://github.com/example-username/express_self_api/README.md", // CHANGE ME
-    base_url: "http://ancient-garden-20783.herokuapp.com", // CHANGE ME
+    documentation_url: "https://github.com/m2creger", 
+    base_url: "http://ancient-garden-20783.herokuapp.com", 
     endpoints: [
       {method: "GET", path: "/api", description: "Describes all available endpoints"},
-      {method: "GET", path: "/api/profile", description: "About me"}, // CHANGE ME
-      {method: "POST", path: "/api/projects", description: "E.g. Create a new campsite"} // CHANGE ME
+      {method: "GET", path: "/api/profile", description: "About me"},
+      {method: "GET", path: "/api/projects", description: "All my projects"},
+      {method: "GET", path: "/api/projects/:id", description: "About one project"},
+      {method: "POST", path: "/api/projects", description: "Create a new project"},
+      {method: "PUT", path: "/api/projects/:id", description: "Edit a project"},
+      {method: "DELETE", path: "/api/projects/:id", description: "Delete a project"}
+
     ]
   })
 });
+app.get('/api/profile', function(req, res) {
+  db.Aboutme.find({}, function(err, profile) {
+    if(err) {
+      console.log(err);
+    } else {
+      res.json(profile);
+    }
+  });
+});
+app.get('/api/projects', function(req, res) {
+  db.Projects.find({}, function(err, projects) {
+    if(err) {
+      console.log(err);
+    } else {
+      res.json(projects);
+    }
+  });
+});
+app.get('/api/projects/:id', function(req, res) {
+  db.Projects.findById({_id: req.params.id }, function(error, project) {
+    if(err) {
+      console.log(err);
+    } else {
+      res.json(project);
+    }
+  });
+});
+// app.get('/api/projects?limit:id', function(req, res) {
+
+// });
+// app.get('/api/projects?status=pending', function(req, res) {
+
+// });
+app.post('/api/projects', function(req, res) {
+
+  var newProject = {
+    _id: 3,
+    name: "awesome mountain biking app",
+    type: "web dev",
+    status: "Still working on"
+  };
+  var projectToSave = new Projects(newProject);
+  projectToSave.save(function(error) {
+    if (error) return handleError(error);
+    res.json(projectToSave)
+  });
+});
+app.put('/api/projects/:id', function(req, res) {
+  db.Projects.findById({_id: req.params.id }, function(error, project) {
+    project.name = "Another app being developed";
+    project.status = "Just getting started";
+    project.type = "Web development"
+    project.save(function(error) {
+      response.json({messsage: 'Could not update project:' + error});
+    })
+  });
+
+});
+app.delete('/api/projects/:id', function(req, res) {
+  db.Projects.findOneAndRemove({ _id: bookId }, function (err, deletedProject) {
+    res.json(deletedProject);
+  });
+});
+// app.get('/api/shows', function(req, res) {
+
+// });
+
+// app.get('/api/shows:id', function(req, res) {
+
+// });
+
+// app.get('/api/shows?limit:id', function(req, res) {
+
+// });
+// app.get('/api/destinations', function(req, res) {
+
+// });
+
 
 /**********
  * SERVER *
